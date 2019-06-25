@@ -75,13 +75,13 @@ export default class SvgPanZoom extends Component<Props, State> {
 
   public static defaultProps: Partial<Props> = {
     canvasHeight: 1080,
-    canvasWidth: 720,
+    canvasWidth:  720,
     minScale: 0.5,
     maxScale: 1.0,
     initialZoom: 0.7,
     canvasStyle: {},
     viewStyle: {},
-    onZoom: (zoom: number) => { },
+    onZoom: (zoom: number) => {},
   };
 
   mainViewRef: any
@@ -89,41 +89,41 @@ export default class SvgPanZoom extends Component<Props, State> {
 
   prTargetSelf: any
   prTargetOuter: any
-
+  
   // Lifecycle methods
-
+  
   constructor(props: Props) {
     super(props);
-
+    
     const vt = this.getInitialViewTransform(props.canvasWidth, props.canvasHeight, props.initialZoom)
-
+    
     this.state = {
       //Layout state
       layoutKnown: false,
       viewDimensions: { height: 0, width: 0, pageX: 0, pageY: 0 },
-
+      
       //ViewTransform state
-      viewTransform: vt,
-
+      viewTransform: vt ,
+      
       isScaling: false,
       initialDistance: 1,
       initialTransform: createIdentityTransform(), //maybe null
       initialScale: props.initialZoom,
       initialTranslation: { x: 0, y: 0 },
-
+      
       isMoving: false,
       initialGestureState: { dx: 0, dy: 0 },
-
+      
       //ViewTransform animation state
       TranslationAnimation: new Animated.ValueXY({ x: vt.translateX, y: vt.translateY }),
       scaleAnimation: new Animated.Value(vt.scaleX),
     }
   }
-
+  
   dropNextEvt = 0
-
+  
   componentWillMount() {
-    this.state.scaleAnimation.addListener((zoom) => { this.props.onZoom(zoom.value) })
+    this.state.scaleAnimation.addListener((zoom)=> { this.props.onZoom(zoom.value) })
 
     this.prInstance = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
@@ -132,35 +132,31 @@ export default class SvgPanZoom extends Component<Props, State> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
         // Set self for filtering events from other PanResponderTarges
-        // if (this.prTargetSelf == null) { 
-        //   if (this.prTargetOuter == null) { this.prTargetOuter = evt.currentTarget }
-        //   if (evt.target !== evt.currentTarget) { this.prTargetSelf = evt.target }
-        // }
-        if (evt.target !== this.prTargetSelf || evt.target !== this.prTargetOuter) {
-          if (this.prTargetOuter == null) { this.prTargetOuter = evt.currentTarget; }
-          if (evt.target !== evt.currentTarget) { this.prTargetSelf = evt.target; }
+        if (this.prTargetSelf == null) { 
+          if (this.prTargetOuter == null) { this.prTargetOuter = evt.currentTarget }
+          if (evt.target !== evt.currentTarget) { this.prTargetSelf = evt.target }
         }
-      },
+       },
       onPanResponderMove: (evt, gestureState) => {
         const touches = evt.nativeEvent.touches
 
         // console.log('evt: ' + evt.target + '*************')
 
-        if (this.dropNextEvt > 0) {
+        if(this.dropNextEvt > 0) { 
           this.dropNextEvt--
-          return
+          return 
         }
-
+        
         //Child element events are bubbled up but are not valid in out context. Sort them out
-        if (evt.target !== this.prTargetSelf && evt.target !== this.prTargetOuter) {
+        if (evt.target !== this.prTargetSelf && evt.target !== this.prTargetOuter){ 
           this.dropNextEvt++
-          return
+          return 
         }
 
         //HACK: the native event has some glitches with far-off coordinates. Sort out the worst ones
-        if ((Math.abs(gestureState.vx) + Math.abs(gestureState.vx)) > 6) {
+        if ((Math.abs(gestureState.vx) + Math.abs(gestureState.vx)) > 6) { 
           this.dropNextEvt++
-          return
+          return 
         }
 
         if (touches.length === 2) {
@@ -231,7 +227,7 @@ export default class SvgPanZoom extends Component<Props, State> {
   }
 
   // Utils
-
+  
   _onLayout = (event) => {
     this.mainViewRef.measure((x, y, w, h, pageX, pageY) => {
 
