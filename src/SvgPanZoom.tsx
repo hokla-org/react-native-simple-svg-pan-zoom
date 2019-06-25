@@ -133,9 +133,6 @@ export default class SvgPanZoom extends Component<Props, State> {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
-        if (this.props.disabled) {
-          return
-        }
         // Set self for filtering events from other PanResponderTarges
         if (this.prTargetSelf == null) {
           if (this.prTargetOuter == null) { this.prTargetOuter = evt.currentTarget }
@@ -143,6 +140,9 @@ export default class SvgPanZoom extends Component<Props, State> {
         }
       },
       onPanResponderMove: (evt, gestureState) => {
+        if (this.props.disabled) {
+          return
+        }
         const touches = evt.nativeEvent.touches
 
         // console.log('evt: ' + evt.target + '*************')
