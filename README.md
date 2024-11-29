@@ -15,7 +15,7 @@ Simply use SvgPanZoom as a wrapper and begin dropping components. Plain react-na
 ```js
 import React, { Component } from 'react';
 import { Circle } from 'react-native-svg';
-import SvgPanZoom, { SvgPanZoomElement } from 'react-native-svg-pan-zoom';
+import SvgPanZoom, { SvgPanZoomElement } from 'react-native-svg-simple-pan-zoom';
 
 class Example extends Component {
 
