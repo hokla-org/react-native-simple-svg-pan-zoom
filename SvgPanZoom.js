@@ -187,7 +187,7 @@ class SvgPanZoom extends Component {
             scaleAnimation: new Animated.Value(vt.scaleX),
         };
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.state.scaleAnimation.addListener((zoom) => { this.props.onZoom(zoom.value); });
         this.prInstance = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => false,
@@ -216,10 +216,10 @@ class SvgPanZoom extends Component {
                     return;
                 }
                 //Child element events are bubbled up but are not valid in out context. Sort them out
-                if (evt.target !== this.prTargetSelf && evt.target !== this.prTargetOuter) {
-                    this.dropNextEvt++;
-                    return;
-                }
+                // if (evt.target !== this.prTargetSelf && evt.target !== this.prTargetOuter) {
+                //   this.dropNextEvt++
+                //   return
+                // }
                 //HACK: the native event has some glitches with far-off coordinates. Sort out the worst ones
                 if ((Math.abs(gestureState.vx) + Math.abs(gestureState.vx)) > 6) {
                     this.dropNextEvt++;
