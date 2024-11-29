@@ -1,5 +1,5 @@
 {
-  "name": "@hokla/react-native-simple-svg-pan-zoom",
+  "name": "@xiniria/react-native-simple-svg-pan-zoom",
   "version": "0.2.0",
   "description": "Pan-zoom for react-native-svg via 'Google Maps'-style pinch and drag gestures",
   "main": "index.js",
