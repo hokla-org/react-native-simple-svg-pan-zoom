@@ -8,7 +8,7 @@ import {
   StyleSheet
 } from 'react-native';
 
-import Svg from 'react-native-svg';
+import Svg, { SvgProps } from 'react-native-svg';
 const SvgView = Svg as any
 
 import {
@@ -32,7 +32,7 @@ import {
  * Interfaces
  *********************************************************/
 
-export interface Props {
+export type Props = React.PropsWithChildren<{
   minScale?: number,
   maxScale?: number,
   initialZoom?: number,
@@ -42,7 +42,7 @@ export interface Props {
   viewStyle?: ViewStyle,
   onZoom?: (zoom: number) => void
   disabled?: boolean;
-}
+}> & SvgProps;
 
 export interface State {
   //Layout
@@ -189,6 +189,7 @@ export default class SvgPanZoom extends Component<Props, State> {
       viewStyle,
       canvasStyle,
       children,
+      ...svgProps
     } = this.props
 
     return (
@@ -222,7 +223,7 @@ export default class SvgPanZoom extends Component<Props, State> {
               width: canvasWidth,
               height: canvasHeight,
             }}
-            viewBox={this.props.viewBox}
+            {...svgProps}
           >
             {children}
           </SvgView>

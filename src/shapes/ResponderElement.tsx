@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { G } from 'react-native-svg';
 const GView = G as any
 
-export interface Props {
-  x:number, 
+export interface Props extends React.PropsWithChildren<{
+  x:number,
   y:number,
   onClick?: (evt:any) => void,
   onClickRelease?: (evt:any) => void,
   onClickCanceled?: (evt:any) => void,
   onDrag?: (evt:any) => void
-}
+}> {}
 export interface State {}
 
 export default class ResponderElement extends Component<Props,State> {
@@ -30,7 +30,7 @@ export default class ResponderElement extends Component<Props,State> {
         y={this.props.y}
         onStartShouldSetResponder={(evt) => true}
         onMoveShouldSetResponder={(evt) => false}
-        onResponderGrant={(evt) => { 
+        onResponderGrant={(evt) => {
           this.releasedNaturally = true
           this.props.onClick(evt)
         }}
