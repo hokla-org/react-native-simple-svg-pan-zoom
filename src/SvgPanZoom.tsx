@@ -49,17 +49,17 @@ export interface State {
   layoutKnown: boolean,
   viewDimensions: ViewDimensions,
 
-  //ViewTransform 
+  //ViewTransform
   viewTransform: ViewTransform
 
-  //Pinch 
+  //Pinch
   isScaling: boolean,
   initialDistance: number,
   initialTransform: ViewTransform,
   initialScale: number,
   initialTranslation: Point
 
-  //Pan 
+  //Pan
   isMoving: boolean,
   initialGestureState: { dx: number, dy: number }
 
@@ -130,7 +130,7 @@ export default class SvgPanZoom extends Component<Props, State> {
     this.prInstance = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => (gestureState.dx > 0 || gestureState.dy > 0),
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
         // Set self for filtering events from other PanResponderTarges
@@ -222,6 +222,7 @@ export default class SvgPanZoom extends Component<Props, State> {
               width: canvasWidth,
               height: canvasHeight,
             }}
+            viewBox={this.props.viewBox}
           >
             {children}
           </SvgView>
@@ -424,7 +425,7 @@ export default class SvgPanZoom extends Component<Props, State> {
       canvasHeight
     } = this.props
 
-    /*gestureState holds total displacement since pan started. 
+    /*gestureState holds total displacement since pan started.
       Here we calculate difference since last call of processTouch */
     const displacement = {
       x: (gestureState.dx - initialGestureState.dx) / viewTransform.scaleX,
