@@ -93,6 +93,15 @@ export function getBoundedTouchTransform(initialTransform, oldTransform, newTran
         width: boundedTransform.scaleX * canvasWidth,
         height: boundedTransform.scaleY * canvasHeight
     };
+    const zoomDisplacement = {
+        x: (canvasWidth - scaledCanvas.width) / 2,
+        y: (canvasHeight - scaledCanvas.height) / 2
+    };
+    const extendPercentage = 0.2;
+    const extendLimit = viewDim.width * extendPercentage;
+    // Compute translation bounds scaling based on zoom level
+    const zoomScaleFactor = Math.max(boundedTransform.scaleX, boundedTransform.scaleY) - 1;
+    // Default to fully unrestricted bounds
     let maxBounds = {
         x: Infinity,
         y: Infinity
@@ -101,22 +110,15 @@ export function getBoundedTouchTransform(initialTransform, oldTransform, newTran
         x: -Infinity,
         y: -Infinity
     };
-    const zoomDisplacement = {
-        x: (canvasWidth - scaledCanvas.width) / 2,
-        y: (canvasHeight - scaledCanvas.height) / 2
-    };
-    const extendPercentage = 0.2;
-    const extendLimit = (viewDim.width * extendPercentage);
-    //Entire Canvas can be seen within the view
-    if (scaledCanvas.width < viewDim.width &&
-        scaledCanvas.height < viewDim.height) {
+    // Entire Canvas can be seen within the view
+    if (scaledCanvas.width < viewDim.width && scaledCanvas.height < viewDim.height) {
         maxBounds = {
-            x: (viewDim.width - scaledCanvas.width) + extendLimit - zoomDisplacement.x,
-            y: (viewDim.height - scaledCanvas.height) + extendLimit - zoomDisplacement.y
+            x: ((viewDim.width - scaledCanvas.width) + extendLimit - zoomDisplacement.x) * zoomScaleFactor,
+            y: ((viewDim.height - scaledCanvas.height) + extendLimit - zoomDisplacement.y) * zoomScaleFactor
         };
         minBounds = {
-            x: -zoomDisplacement.x - extendLimit,
-            y: -zoomDisplacement.y - extendLimit
+            x: (-zoomDisplacement.x - extendLimit) * zoomScaleFactor,
+            y: (-zoomDisplacement.y - extendLimit) * zoomScaleFactor
         };
         if (initialTransform.translateX > maxBounds.x) {
             maxBounds.x = initialTransform.translateX;
@@ -133,12 +135,12 @@ export function getBoundedTouchTransform(initialTransform, oldTransform, newTran
     }
     else {
         maxBounds = {
-            x: viewDim.width - zoomDisplacement.x - extendLimit,
-            y: viewDim.height - zoomDisplacement.y - extendLimit
+            x: (viewDim.width - zoomDisplacement.x - extendLimit) * zoomScaleFactor,
+            y: (viewDim.height - zoomDisplacement.y - extendLimit) * zoomScaleFactor
         };
         minBounds = {
-            x: -zoomDisplacement.x - (scaledCanvas.width) + extendLimit,
-            y: -zoomDisplacement.y - (scaledCanvas.height) + extendLimit
+            x: (-zoomDisplacement.x - scaledCanvas.width + extendLimit) * zoomScaleFactor,
+            y: (-zoomDisplacement.y - scaledCanvas.height + extendLimit) * zoomScaleFactor
         };
     }
     boundedTransform.translateX = Math.min(Math.max(boundedTransform.translateX, minBounds.x), maxBounds.x);
