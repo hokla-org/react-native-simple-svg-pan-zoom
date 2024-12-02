@@ -262,6 +262,15 @@ export default class SvgPanZoom extends Component<Props, State> {
     )
   }
 
+  public resetZoom = (duration?: number | undefined) => {
+    return this.zoomToPoint(
+      this.state.viewDimensions.width / 2,
+      this.state.viewDimensions.height / 2,
+      this.state.initialScale,
+      duration,
+    );
+  };
+
   public zoomToPoint = (x: number, y: number, scale: number, duration: number = 700) => {
 
     const { viewDimensions } = this.state
