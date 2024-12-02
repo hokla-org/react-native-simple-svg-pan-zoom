@@ -48,6 +48,7 @@ export default class SvgPanZoom extends Component<Props, State> {
     render(): React.JSX.Element;
     _onLayout: (event: any) => void;
     getInitialViewTransform(canvasWidth: number, canvasHeight: any, scale: number): ViewTransform;
+    resetZoom: (duration?: number | undefined) => void;
     zoomToPoint: (x: number, y: number, scale: number, duration?: number) => void;
     processPinch: (x1: any, y1: any, x2: any, y2: any) => void;
     processTouch: (gestureState: any) => void;

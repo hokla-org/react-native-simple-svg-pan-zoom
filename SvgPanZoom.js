@@ -36,6 +36,9 @@ class SvgPanZoom extends Component {
                 });
             });
         };
+        this.resetZoom = (duration) => {
+            return this.zoomToPoint(this.state.viewDimensions.width / 2, this.state.viewDimensions.height / 2, this.state.initialScale, duration);
+        };
         this.zoomToPoint = (x, y, scale, duration = 700) => {
             const { viewDimensions } = this.state;
             const { canvasHeight, canvasWidth } = this.props;
