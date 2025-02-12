@@ -72,6 +72,8 @@ export interface State {
  * Component
  *********************************************************/
 
+const PAN_ACTIVATION_THRESHOLD = 5;
+
 export default class SvgPanZoom extends Component<Props, State> {
 
   public static defaultProps: Partial<Props> = {
@@ -130,7 +132,14 @@ export default class SvgPanZoom extends Component<Props, State> {
     this.prInstance = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => (gestureState.dx > 0 || gestureState.dy > 0),
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        const isPinching = gestureState.numberActiveTouches >= 2;
+        const isTryingToPan =
+          Math.abs(gestureState.dx) > PAN_ACTIVATION_THRESHOLD ||
+          Math.abs(gestureState.dy) > PAN_ACTIVATION_THRESHOLD;
+
+        return isPinching || isTryingToPan;
+      },
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
         // Set self for filtering events from other PanResponderTarges
