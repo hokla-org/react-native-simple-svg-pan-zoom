@@ -10,13 +10,14 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React, { Component } from 'react';
-import { View, PanResponder, Animated, StyleSheet } from 'react-native';
+import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 const SvgView = Svg;
-import { createIdentityTransform, calcDistance, calcCenter, createScalingMatrix, createTranslationMatrix, viewTransformMult, getBoundedPinchTransform, getBoundedTouchTransform } from './util';
+import { calcCenter, calcDistance, createIdentityTransform, createScalingMatrix, createTranslationMatrix, getBoundedPinchTransform, getBoundedTouchTransform, viewTransformMult } from './util';
 /*********************************************************
  * Component
  *********************************************************/
+// The PAN_ACTIVATION_THRESHOLD value is determined by trial and error by looking the result on Samsung 9 and iPhone 7
 const PAN_ACTIVATION_THRESHOLD = 5;
 class SvgPanZoom extends Component {
     // Lifecycle methods
