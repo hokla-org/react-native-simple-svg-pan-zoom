@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
 import {
-  View,
-  PanResponder, PanResponderInstance,
   Animated,
-  ViewStyle,
-  StyleSheet
+  PanResponder, PanResponderInstance,
+  StyleSheet,
+  View,
+  ViewStyle
 } from 'react-native';
 
 import Svg, { SvgProps } from 'react-native-svg';
@@ -13,19 +13,19 @@ const SvgView = Svg as any
 
 import {
   Point,
-  ViewTransform,
-  ViewDimensions
+  ViewDimensions,
+  ViewTransform
 } from './interfaces';
 
 import {
-  createIdentityTransform,
-  calcDistance,
   calcCenter,
+  calcDistance,
+  createIdentityTransform,
   createScalingMatrix,
   createTranslationMatrix,
-  viewTransformMult,
   getBoundedPinchTransform,
-  getBoundedTouchTransform
+  getBoundedTouchTransform,
+  viewTransformMult
 } from './util';
 
 /*********************************************************
@@ -71,6 +71,9 @@ export interface State {
 /*********************************************************
  * Component
  *********************************************************/
+
+// The PAN_ACTIVATION_THRESHOLD value is determined by trial and error by looking the result on Samsung 9 and iPhone 7
+const PAN_ACTIVATION_THRESHOLD = 5;
 
 export default class SvgPanZoom extends Component<Props, State> {
 
@@ -130,7 +133,14 @@ export default class SvgPanZoom extends Component<Props, State> {
     this.prInstance = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => false,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => (gestureState.dx > 0 || gestureState.dy > 0),
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        const isPinching = gestureState.numberActiveTouches >= 2;
+        const isTryingToPan =
+          Math.abs(gestureState.dx) > PAN_ACTIVATION_THRESHOLD ||
+          Math.abs(gestureState.dy) > PAN_ACTIVATION_THRESHOLD;
+
+        return isPinching || isTryingToPan;
+      },
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
         // Set self for filtering events from other PanResponderTarges

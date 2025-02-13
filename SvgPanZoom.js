@@ -10,13 +10,15 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React, { Component } from 'react';
-import { View, PanResponder, Animated, StyleSheet } from 'react-native';
+import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 const SvgView = Svg;
-import { createIdentityTransform, calcDistance, calcCenter, createScalingMatrix, createTranslationMatrix, viewTransformMult, getBoundedPinchTransform, getBoundedTouchTransform } from './util';
+import { calcCenter, calcDistance, createIdentityTransform, createScalingMatrix, createTranslationMatrix, getBoundedPinchTransform, getBoundedTouchTransform, viewTransformMult } from './util';
 /*********************************************************
  * Component
  *********************************************************/
+// The PAN_ACTIVATION_THRESHOLD value is determined by trial and error by looking the result on Samsung 9 and iPhone 7
+const PAN_ACTIVATION_THRESHOLD = 5;
 class SvgPanZoom extends Component {
     // Lifecycle methods
     constructor(props) {
@@ -195,7 +197,12 @@ class SvgPanZoom extends Component {
         this.prInstance = PanResponder.create({
             onStartShouldSetPanResponder: (evt, gestureState) => false,
             onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-            onMoveShouldSetPanResponder: (evt, gestureState) => (gestureState.dx > 0 || gestureState.dy > 0),
+            onMoveShouldSetPanResponder: (evt, gestureState) => {
+                const isPinching = gestureState.numberActiveTouches >= 2;
+                const isTryingToPan = Math.abs(gestureState.dx) > PAN_ACTIVATION_THRESHOLD ||
+                    Math.abs(gestureState.dy) > PAN_ACTIVATION_THRESHOLD;
+                return isPinching || isTryingToPan;
+            },
             onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
             onPanResponderGrant: (evt, gestureState) => {
                 // Set self for filtering events from other PanResponderTarges
